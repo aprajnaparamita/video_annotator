@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Video Annotator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="container">
+
+  <!-- FIXED: Added a real positioned wrapper -->
+  <div id="videoContainer">
+    <video id="video" controls width="720" height="480"></video>
+    <canvas id="canvas" width="720" height="480"></canvas>
+  </div>
+
+  <div id="controls">
+    <div class="form-group">
+      <label for="annotationTitle">Title:</label>
+      <input type="text" id="annotationTitle" placeholder="Enter title">
+    </div>
+    <div class="form-group">
+      <label for="weldType">Weld Type:</label>
+      <select id="weldType">
+        <option value="FCAW">FCAW</option>
+        <option value="GMAW">GMAW</option>
+        <option value="GTAW">GTAW</option>
+        <option value="OFC">OFC</option>
+        <option value="OFW">OFW</option>
+        <option value="PAC">PAC</option>
+        <option value="SMAW">SMAW</option>
+        <option value="TB">TB</option>
+        <option value="Other" selected>Other</option>
+      </select>
+    </div>
+    <button id="toggle" class="btn-annotate btn-annotate-start">Start Annotate</button>
+
+    <select id="colorPicker">
+      <option value="#ffffff">White</option>
+      <option value="#000000">Black</option>
+      <option value="#ff5555">Red</option>
+      <option value="#55ff55">Green</option>
+      <option value="#5555ff">Blue</option>
+      <option value="#ff55ff">Magenta</option>
+    </select>
+  </div>
+
+  <textarea id="notes" placeholder="Notes…"></textarea>
+
+  <div id="timestampPanel">
+    <select id="timestampList" size="8"></select>
+    <button id="deleteBtn">Delete Selected</button>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
+
