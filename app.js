@@ -63,30 +63,28 @@ function redrawCanvas() {
 // -----------------------------------------------------
 function enableDrawingMode(enable, { fromLoad = false } = {}) {
   drawingMode = enable;
-  const toggleBtn = document.getElementById('toggle');
-  
-  // Update button appearance based on drawing mode
+
+  const editBtn = document.getElementById('editBtn');
+  const saveBtn = document.getElementById('saveBtn');
+
   if (enable) {
-    // Set to "Stop Annotate" in red
-    toggleBtn.textContent = 'Stop Annotate';
-    toggleBtn.classList.remove('btn-annotate-start');
-    toggleBtn.classList.add('btn-annotate-stop');
+    // Entering edit mode
+    editBtn.disabled = true;
+    saveBtn.disabled = false;
     
     canvas.style.pointerEvents = "auto";
     video.style.pointerEvents = "none";
     video.pause();
 
     if (!fromLoad) { 
-      // Only clear strokes/notes when user explicitly toggles, not when loading
       strokes = [];
       redrawCanvas();
       notesBox.value = "";
     }
   } else {
-    // Set to "Start Annotate" in green
-    toggleBtn.textContent = 'Start Annotate';
-    toggleBtn.classList.remove('btn-annotate-stop');
-    toggleBtn.classList.add('btn-annotate-start');
+    // Exiting edit mode (saving)
+    editBtn.disabled = false;
+    saveBtn.disabled = true;
     
     canvas.style.pointerEvents = "none";
     video.style.pointerEvents = "auto";
@@ -103,7 +101,10 @@ function enableDrawingMode(enable, { fromLoad = false } = {}) {
 
 
 
-document.getElementById("toggle").addEventListener("click", () => {
+document.getElementById("editBtn").addEventListener("click", () => {
+  enableDrawingMode(!drawingMode);
+});
+document.getElementById("saveBtn").addEventListener("click", () => {
   enableDrawingMode(!drawingMode);
 });
 
@@ -242,11 +243,18 @@ deleteBtn.addEventListener("click", async () => {
   const filename = timestampList.value;
   if (!filename) return;
 
-  await ipcRenderer.invoke("delete-json", { annotationDir, filename });
+  const confirmDelete = confirm("Are you sure you want to delete this annotation?");
+  if (!confirmDelete) return;
 
   strokes = [];
   redrawCanvas();
   notesBox.value = "";
-  await loadTimestamps();
+  const success = await ipcRenderer.invoke("delete-json", { annotationDir, filename });
+  if (success) {
+    // Reset to not editing mode if we were in edit mode
+    if (drawingMode) {
+      enableDrawingMode(false);
+    }
+    await loadTimestamps();
+  }
 });
-

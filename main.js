@@ -7,7 +7,7 @@ let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1000,
+    width: 800, // 740px content + 30px left margin + 30px right margin
     height: 900,
     webPreferences: {
       nodeIntegration: true,
@@ -49,7 +49,7 @@ ipcMain.handle("select-video", async () => {
   // Update window title to include the folder name
   const folderName = path.basename(folder);
   if (mainWindow) {
-    mainWindow.setTitle(`Video Annotator: ${folderName}`);
+    mainWindow.setTitle(`Video Annotator: ${baseName}`);
   }
 
   return {
